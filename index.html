@@ -55,6 +55,7 @@
 
         .action-list { padding: 0 1.5rem; display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
         .action-btn { display: flex; align-items: center; padding: 14px; border-radius: 14px; text-decoration: none; color: white; font-weight: 600; font-size: 0.95rem; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); transition: transform 0.2s; }
+        .action-btn:active { transform: scale(0.98); }
         .action-btn i { width: 30px; font-size: 1.3rem; text-align: center; margin-right: 12px; }
 
         .btn-iban-content { display: flex; flex-direction: column; width: 100%; overflow: hidden; }
@@ -67,28 +68,33 @@
         .footer { margin-top: auto; padding: 25px; text-align: center; color: rgba(255,255,255,0.6); font-size: 0.8rem; }
         .dev-signature a { color: rgba(255,255,255,0.8); text-decoration: none; border-bottom: 1px dotted rgba(255,255,255,0.5); }
 
+        /* MASAÜSTÜ MÜŞTERİ MODU */
         body.view-mode { background-color: #111827; display: flex; align-items: center; justify-content: center; }
         body.view-mode .editor-panel { display: none; }
         body.view-mode .preview-area { background: transparent; width: auto; padding: 20px; }
         body.view-mode .phone-mockup { width: 380px; height: 85vh; max-height: 800px; box-shadow: 0 0 50px rgba(0,0,0,0.5); margin: 0 auto; }
 
+        /* MOBİL RESPONSIVE AYARLARI (BUG BURADAYDI, DÜZELDİ) */
         @media (max-width: 768px) {
-            body.view-mode { background: #000; }
-            body.view-mode .preview-area { width: 100%; height: 100%; padding: 0; }
+            /* Eğer editör modundaysak: Önizlemeyi gizle, Editörü göster */
+            body:not(.view-mode) .preview-area { display: none; }
+            body:not(.view-mode) .editor-panel { width: 100%; z-index: 20; position: absolute; height: 100%; }
+
+            /* Eğer MÜŞTERİ modundaysak: Editörü gizle, Önizlemeyi GÖSTER */
+            body.view-mode .editor-panel { display: none; }
+            body.view-mode .preview-area { display: flex; width: 100%; height: 100%; padding: 0; }
+            
             body.view-mode .phone-mockup { width: 100%; height: 100%; border: none; border-radius: 0; box-shadow: none; padding: 0; }
             body.view-mode .screen { border-radius: 0; }
-            .editor-panel { width: 100%; z-index: 20; position: absolute; height: 100%; }
-            .preview-area { display: none; }
         }
 
         .hidden { display: none !important; }
         .toast { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: #10b981; color: white; padding: 12px 30px; border-radius: 30px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-weight: bold; }
 
         /* --- SİHİRLİ YAZDIRMA CSS'İ --- */
-        /* Bu kısım sadece "Yazdır" denilince çalışır */
         @media print {
-            body * { visibility: hidden; } /* Her şeyi gizle */
-            #poster-area, #poster-area * { visibility: visible; } /* Sadece posteri göster */
+            body * { visibility: hidden; }
+            #poster-area, #poster-area * { visibility: visible; }
             
             #poster-area {
                 display: flex !important;
@@ -144,9 +150,7 @@
         </div>
         <div class="print-title" id="printName">Firma Adı</div>
         <div class="print-subtitle" id="printTitle">Ünvan</div>
-        
         <div class="print-qr-box" id="qrcode-poster"></div>
-        
         <div class="print-cta">Hızlı İşlem İçin Okutun 📷</div>
         <div class="print-footer">Dijital Asistan Sistemi | Developed by Batuhan Bayatlı</div>
     </div>
@@ -156,8 +160,8 @@
             <div class="modal-title"><i class="fas fa-exclamation-triangle"></i> Yasal Bilgilendirme</div>
             <div class="modal-text">
                 <strong>1. Ücretsiz Yazılım:</strong> Bu sistem, acentelerin dijitalleşmesi için Batuhan Bayatlı tarafından ücretsiz geliştirilmiştir.<br><br>
-                <strong>2. Veri Güvenliği:</strong> Veritabanı kullanılmamaktadır. Tüm bilgiler linkin içinde şifrelenmeden taşınır. <br><br>
-                <strong>3. Sorumluluk Reddi:</strong> Sistem "olduğu gibi" sunulmuştur. Kullanımdan doğabilecek sorunlardan geliştirici sorumlu değildir.
+                <strong>2. Veri Güvenliği:</strong> Veritabanı kullanılmamaktadır. Tüm bilgiler linkin içinde şifrelenmeden taşınır.<br><br>
+                <strong>3. Sorumluluk Reddi:</strong> Sistem "olduğu gibi" sunulmuştur. Geliştirici sorumlu değildir.
             </div>
             <button class="modal-btn" onclick="acceptLegal()">Okudum ve Kabul Ediyorum</button>
         </div>
@@ -208,7 +212,7 @@
                 <button class="action-sm-btn btn-copy" onclick="copyLink()">📋 Linki Kopyala</button>
                 <a href="https://tinyurl.com/app" target="_blank" class="action-sm-btn btn-shorten">✂️ Kısalt (TinyURL)</a>
             </div>
-            <button class="action-sm-btn btn-print" onclick="printPoster()"><i class="fas fa-print"></i> A4 Poster Yazdır (Sayfadan Çıkmadan)</button>
+            <button class="action-sm-btn btn-print" onclick="printPoster()"><i class="fas fa-print"></i> A4 Poster Yazdır</button>
             <input type="text" id="finalLinkInput" style="opacity:0; height:1px; width:1px;">
         </div>
     </div>
@@ -315,7 +319,6 @@
             const baseUrl = window.location.href.split('?')[0];
             const p = new URLSearchParams();
             
-            // Tüm parametreleri topla
             p.append('name', document.getElementById('inpName').value);
             p.append('title', document.getElementById('inpTitle').value);
             p.append('phone', document.getElementById('inpPhone').value);
@@ -337,12 +340,12 @@
             document.getElementById('resBox').style.display = 'block';
             document.getElementById('finalLinkInput').value = fullLink;
 
-            // 1. KÜÇÜK QR (Editörde görünen)
+            // 1. KÜÇÜK QR
             const qrSmall = document.getElementById("qrcode");
             qrSmall.innerHTML = "";
             new QRCode(qrSmall, { text: fullLink, width: 150, height: 150, correctLevel: QRCode.CorrectLevel.L });
 
-            // 2. POSTER HAZIRLIĞI (Gizli Poster Alanını Doldur)
+            // 2. POSTER HAZIRLIĞI
             document.getElementById('printName').innerText = document.getElementById('inpName').value || "Firma Adı";
             document.getElementById('printTitle').innerText = document.getElementById('inpTitle').value || "Yetkili Acente";
             
@@ -356,16 +359,13 @@
                 document.getElementById('printIcon').style.display = 'block';
             }
 
-            // 3. POSTER QR KODU (Otomatik Üretilir)
+            // 3. POSTER QR
             const qrPoster = document.getElementById("qrcode-poster");
             qrPoster.innerHTML = "";
             new QRCode(qrPoster, { text: fullLink, width: 350, height: 350, correctLevel: QRCode.CorrectLevel.L });
         }
         
-        function printPoster() {
-            // Sadece yazdırma penceresini tetikler. CSS gerisini halleder.
-            window.print();
-        }
+        function printPoster() { window.print(); }
 
         function copyLink() {
             const link = document.getElementById('finalLinkInput'); link.select(); document.execCommand("copy"); alert("Link Kopyalandı!");
