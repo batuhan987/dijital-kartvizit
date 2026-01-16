@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dijital Asistan</title>
+    <title>Dijital Kartvizit V1 - Batuhan Bayatlı</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         :root { --primary: #2563eb; --dark: #0f172a; --bg: #e2e8f0; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-        /* --- POSTER ALANI (NORMALDE GİZLİ) --- */
+        
         #poster-area { display: none; }
 
-        /* --- NORMAL EKRAN STİLLERİ --- */
+        
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); z-index: 9999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-box { background: white; width: 90%; max-width: 600px; padding: 2rem; border-radius: 16px; text-align: center; border: 1px solid #cbd5e1; }
         .modal-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 1rem; color: #dc2626; }
@@ -68,19 +68,19 @@
         .footer { margin-top: auto; padding: 25px; text-align: center; color: rgba(255,255,255,0.6); font-size: 0.8rem; }
         .dev-signature a { color: rgba(255,255,255,0.8); text-decoration: none; border-bottom: 1px dotted rgba(255,255,255,0.5); }
 
-        /* MASAÜSTÜ MÜŞTERİ MODU */
+        
         body.view-mode { background-color: #111827; display: flex; align-items: center; justify-content: center; }
         body.view-mode .editor-panel { display: none; }
         body.view-mode .preview-area { background: transparent; width: auto; padding: 20px; }
         body.view-mode .phone-mockup { width: 380px; height: 85vh; max-height: 800px; box-shadow: 0 0 50px rgba(0,0,0,0.5); margin: 0 auto; }
 
-        /* MOBİL RESPONSIVE AYARLARI (BUG BURADAYDI, DÜZELDİ) */
+        
         @media (max-width: 768px) {
-            /* Eğer editör modundaysak: Önizlemeyi gizle, Editörü göster */
+            
             body:not(.view-mode) .preview-area { display: none; }
             body:not(.view-mode) .editor-panel { width: 100%; z-index: 20; position: absolute; height: 100%; }
 
-            /* Eğer MÜŞTERİ modundaysak: Editörü gizle, Önizlemeyi GÖSTER */
+            
             body.view-mode .editor-panel { display: none; }
             body.view-mode .preview-area { display: flex; width: 100%; height: 100%; padding: 0; }
             
@@ -91,7 +91,7 @@
         .hidden { display: none !important; }
         .toast { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: #10b981; color: white; padding: 12px 30px; border-radius: 30px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-weight: bold; }
 
-        /* --- SİHİRLİ YAZDIRMA CSS'İ --- */
+        
         @media print {
             body * { visibility: hidden; }
             #poster-area, #poster-area * { visibility: visible; }
@@ -238,7 +238,7 @@
                             <input type="hidden" id="rawIban">
                         </div>
                     </div>
-                    <div class="footer"><div>Dijital Asistan Sistemi</div><div class="dev-signature">Developed by <a href="https://www.linkedin.com/in/batuhanbayatlı/" target="_blank">Batuhan Bayatlı</a></div></div>
+                    <div class="footer"><div>Dijital Kartvizit V1</div><div class="dev-signature">Geliştirici: <a href="https://www.linkedin.com/in/batuhanbayatlı/" target="_blank">Batuhan Bayatlı</a></div></div>
                 </div>
                 <div class="toast" id="toast">IBAN Kopyalandı! ✅</div>
             </div>
@@ -340,12 +340,12 @@
             document.getElementById('resBox').style.display = 'block';
             document.getElementById('finalLinkInput').value = fullLink;
 
-            // 1. KÜÇÜK QR
+            
             const qrSmall = document.getElementById("qrcode");
             qrSmall.innerHTML = "";
             new QRCode(qrSmall, { text: fullLink, width: 150, height: 150, correctLevel: QRCode.CorrectLevel.L });
 
-            // 2. POSTER HAZIRLIĞI
+            
             document.getElementById('printName').innerText = document.getElementById('inpName').value || "Firma Adı";
             document.getElementById('printTitle').innerText = document.getElementById('inpTitle').value || "Yetkili Acente";
             
@@ -359,7 +359,7 @@
                 document.getElementById('printIcon').style.display = 'block';
             }
 
-            // 3. POSTER QR
+            
             const qrPoster = document.getElementById("qrcode-poster");
             qrPoster.innerHTML = "";
             new QRCode(qrPoster, { text: fullLink, width: 350, height: 350, correctLevel: QRCode.CorrectLevel.L });
@@ -403,3 +403,4 @@
     </script>
 </body>
 </html>
+
