@@ -3,405 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dijital Kartvizit V1 - Batuhan Bayatlı</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <title>Sigorta Haber Merkezi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@400;700;900&display=swap" rel="stylesheet">
+    
     <style>
-        :root { --primary: #2563eb; --dark: #0f172a; --bg: #e2e8f0; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; overflow: hidden; }
-
+        /* ... (Önceki CSS'lerin aynısı, sadece .mag-cover değişti) ... */
+        :root { --primary: #0f172a; --accent: #ef4444; --paper: #fdfbf7; --text: #334155; --bg: #f1f5f9; }
+        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        nav { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 100; }
+        .logo-box { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-img { height: 45px; width: auto; }
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links a { color: var(--primary); font-weight: 600; text-decoration: none; }
+        .agenda-section { padding: 40px 5%; }
+        .agenda-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+        .news-box { background: white; border-radius: 12px; padding: 25px; border-top: 5px solid; height: 350px; display: flex; flex-direction: column; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: transform 0.2s; }
+        .news-box:hover { transform: translateY(-5px); }
+        .box-tr { border-color: #ef4444; } .box-law { border-color: #2563eb; } .box-world { border-color: #16a34a; }
+        .box-header { display: flex; gap: 10px; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px; font-weight: 800; text-transform: uppercase; }
+        .news-headline { font-size: 1.3rem; font-weight: 800; color: var(--primary); margin-bottom: 10px; cursor: pointer; line-height: 1.3; }
+        .newspaper-section { background: var(--paper); padding: 60px 10%; border-y: 1px solid #e2e8f0; }
+        .paper-header { text-align: center; border-bottom: 3px double var(--primary); margin-bottom: 40px; }
+        .paper-title { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: var(--primary); margin: 0; }
+        .paper-layout { display: flex; gap: 40px; align-items: flex-start; }
+        .paper-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; position: sticky; top: 120px; }
+        .paper-articles { flex: 1; display: flex; flex-direction: column; gap: 30px; min-height: 400px; }
+        .gazete-item { border-bottom: 1px solid #cbd5e1; padding-bottom: 25px; }
+        .gazete-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: #111827; cursor: pointer; }
+        .control-btn { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--primary); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
         
-        #poster-area { display: none; }
-
-        
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.98); z-index: 9999; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-box { background: white; width: 90%; max-width: 600px; padding: 2rem; border-radius: 16px; text-align: center; border: 1px solid #cbd5e1; }
-        .modal-title { font-size: 1.4rem; font-weight: 800; margin-bottom: 1rem; color: #dc2626; }
-        .modal-text { font-size: 0.9rem; text-align: left; background: #fff1f2; padding: 20px; border-radius: 8px; margin-bottom: 2rem; max-height: 40vh; overflow-y: auto; border: 1px solid #fecaca; line-height: 1.5; }
-        .modal-btn { background: var(--dark); color: white; border: none; padding: 15px 30px; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 1rem; }
-
-        .editor-panel { width: 420px; background: white; padding: 2rem; overflow-y: auto; border-right: 1px solid #ddd; z-index: 10; display: flex; flex-direction: column; gap: 1rem; }
-        .section-title { font-size: 0.8rem; font-weight: 800; color: #64748b; text-transform: uppercase; margin-top: 1rem; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 5px; }
-        .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; box-sizing: border-box; }
-        
-        .style-tools { display: flex; gap: 10px; align-items: center; margin-top: 5px; }
-        .style-btn { width: 35px; height: 35px; border: 1px solid #cbd5e1; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .style-btn.active { background: var(--dark); color: white; }
-        .color-input { width: 40px; height: 35px; padding: 2px; border: 1px solid #ccc; border-radius: 6px; cursor: pointer;}
-
-        .btn-generate { background: var(--dark); color: white; border: none; padding: 15px; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%; }
-        
-        .link-result { background: #eff6ff; border: 1px solid #bfdbfe; padding: 20px; border-radius: 12px; display: none; margin-top: 15px; text-align: center; }
-        .link-actions { display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;}
-        .action-sm-btn { flex: 1; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600; min-width: 120px; }
-        .btn-copy { background: #3b82f6; color: white; }
-        .btn-shorten { background: #f59e0b; color: white; text-decoration: none; display: flex; align-items: center; justify-content: center;}
-        .btn-print { background: #10b981; color: white; width: 100%; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-
-        #qrcode { margin: 15px auto; display: flex; justify-content: center; background: white; padding: 10px; border-radius: 8px; width: fit-content; border: 1px solid #ddd; }
-
-        .preview-area { flex: 1; display: flex; justify-content: center; align-items: center; background-image: radial-gradient(#cbd5e1 1px, transparent 1px); background-size: 20px 20px; }
-        .phone-mockup { width: 340px; height: 680px; background: #1e293b; border-radius: 45px; padding: 12px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); border: 8px solid #334155; position: relative; transition: 0.3s; }
-        .screen { background-color: #0f172a; background-size: cover; background-position: center; width: 100%; height: 100%; border-radius: 35px; overflow-y: auto; overflow-x: hidden; position: relative; color: white; display: flex; flex-direction: column; }
-        .screen-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.9)); z-index: 1; pointer-events: none; }
-        .content-wrapper { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; }
-
-        .card-header { text-align: center; padding: 3rem 1.5rem 1.5rem; }
-        .logo-box { width: 110px; height: 110px; margin: 0 auto 1rem; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 4px solid rgba(255,255,255,0.3); }
-        .logo-img { width: 100%; height: 100%; object-fit: cover; }
-        .firm-name { font-size: 1.6rem; font-weight: 800; margin: 0; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-        .firm-title { font-size: 0.95rem; opacity: 0.95; margin-top: 8px; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
-
-        .action-list { padding: 0 1.5rem; display: flex; flex-direction: column; gap: 14px; margin-top: 10px; }
-        .action-btn { display: flex; align-items: center; padding: 14px; border-radius: 14px; text-decoration: none; color: white; font-weight: 600; font-size: 0.95rem; backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); transition: transform 0.2s; }
-        .action-btn:active { transform: scale(0.98); }
-        .action-btn i { width: 30px; font-size: 1.3rem; text-align: center; margin-right: 12px; }
-
-        .btn-iban-content { display: flex; flex-direction: column; width: 100%; overflow: hidden; }
-        .iban-label { font-size: 0.8rem; opacity: 0.8; margin-bottom: 2px; }
-        .iban-number { font-family: 'Courier New', monospace; font-size: 0.8rem; letter-spacing: 0px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .bg-ws { background: linear-gradient(90deg, #25D366 0%, #128C7E 100%); border: none; }
-        .bg-map { background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%); border: none; }
-        
-        .footer { margin-top: auto; padding: 25px; text-align: center; color: rgba(255,255,255,0.6); font-size: 0.8rem; }
-        .dev-signature a { color: rgba(255,255,255,0.8); text-decoration: none; border-bottom: 1px dotted rgba(255,255,255,0.5); }
-
-        
-        body.view-mode { background-color: #111827; display: flex; align-items: center; justify-content: center; }
-        body.view-mode .editor-panel { display: none; }
-        body.view-mode .preview-area { background: transparent; width: auto; padding: 20px; }
-        body.view-mode .phone-mockup { width: 380px; height: 85vh; max-height: 800px; box-shadow: 0 0 50px rgba(0,0,0,0.5); margin: 0 auto; }
-
-        
-        @media (max-width: 768px) {
-            
-            body:not(.view-mode) .preview-area { display: none; }
-            body:not(.view-mode) .editor-panel { width: 100%; z-index: 20; position: absolute; height: 100%; }
-
-            
-            body.view-mode .editor-panel { display: none; }
-            body.view-mode .preview-area { display: flex; width: 100%; height: 100%; padding: 0; }
-            
-            body.view-mode .phone-mockup { width: 100%; height: 100%; border: none; border-radius: 0; box-shadow: none; padding: 0; }
-            body.view-mode .screen { border-radius: 0; }
+        /* GÜNCELLENEN DERGİ KAPAĞI STİLİ */
+        .magazine-section { padding: 60px 10%; background: #0f172a; color: white; }
+        .mag-container { display: flex; gap: 50px; align-items: center; }
+        .mag-cover { 
+            width: 280px; min-width: 280px; height: 380px; 
+            /* Varsayılan Arkaplan */
+            background: linear-gradient(135deg, #ef4444, #991b1b); 
+            background-size: cover; background-position: center;
+            padding: 25px; transform: rotate(-3deg); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
+            display: flex; flex-direction: column; justify-content: space-between; 
+            cursor: pointer; transition: 0.3s; 
+            position: relative; overflow: hidden;
         }
-
-        .hidden { display: none !important; }
-        .toast { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); background: #10b981; color: white; padding: 12px 30px; border-radius: 30px; opacity: 0; transition: 0.3s; pointer-events: none; z-index: 10; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-weight: bold; }
-
+        /* Kapak resmi varsa yazıları daha okunaklı yapmak için gölge */
+        .mag-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.3); z-index: 1; }
+        .mag-content-layer { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
         
-        @media print {
-            body * { visibility: hidden; }
-            #poster-area, #poster-area * { visibility: visible; }
-            
-            #poster-area {
-                display: flex !important;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background: white;
-                color: black;
-                padding: 20px;
-                box-sizing: border-box;
-            }
+        .mag-logo { font-family: 'Playfair Display'; font-size: 2.2rem; font-weight: 900; border-bottom: 2px solid white; padding-bottom: 10px; line-height: 0.9; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .mag-headline { font-size: 1.8rem; font-weight: 800; line-height: 1.1; margin-top: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
 
-            .print-logo-box { width: 150px; height: 150px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-            .print-logo-img { width: 100%; height: 100%; object-fit: contain; }
-            .print-logo-icon { font-size: 5rem; color: #ccc; }
-            
-            .print-title { font-size: 3rem; font-weight: 800; text-transform: uppercase; margin: 0; color: #111; text-align: center; line-height: 1.2;}
-            .print-subtitle { font-size: 1.5rem; color: #555; margin-top: 10px; margin-bottom: 40px; font-weight: 500; text-transform: uppercase; letter-spacing: 2px;}
-            
-            .print-qr-box { 
-                border: 4px solid #000; 
-                padding: 15px; 
-                border-radius: 20px; 
-                margin-bottom: 30px;
-                display: flex; justify-content: center; align-items: center;
-            }
-            .print-qr-box img { width: 350px !important; height: 350px !important; display: block; }
-            
-            .print-cta { 
-                font-size: 1.8rem; 
-                font-weight: bold; 
-                color: #2563eb; 
-                background: #eff6ff; 
-                padding: 15px 40px; 
-                border-radius: 50px; 
-                border: 2px solid #bfdbfe;
-            }
-            .print-footer { margin-top: auto; font-size: 0.9rem; color: #999; padding-bottom: 20px; }
+        footer { background: #0f172a; color: #94a3b8; padding: 50px 5%; text-align: center; border-top: 4px solid var(--accent); }
+        
+        /* Modal Stilleri (Aynı) */
+        .reader-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 2000; overflow-y: auto; }
+        .reader-content { background: white; width: 90%; max-width: 800px; margin: 50px auto; padding: 40px; border-radius: 12px; position: relative; }
+        .reader-close { position: absolute; top: 20px; right: 25px; font-size: 3rem; cursor: pointer; color: #ef4444; line-height: 0.5; }
+        .article-body img { max-width: 100%; height: auto; }
+
+        @media (max-width: 768px) {
+            .agenda-grid { grid-template-columns: 1fr; }
+            .mag-container { flex-direction: column; }
+            .mag-cover { transform: rotate(0deg); }
         }
     </style>
 </head>
 <body>
 
-    <div id="poster-area">
-        <div class="print-logo-box">
-            <img src="" id="printLogo" class="print-logo-img" style="display:none;">
-            <i class="fas fa-building print-logo-icon" id="printIcon"></i>
+    <nav>
+        <a href="#" class="logo-box">
+            <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+            <span style="font-weight:900; font-size:1.4rem; color:var(--primary);">SİGORTA<span style="color:var(--accent);">HABER</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="#gundem">Gündem</a>
+            <a href="#gazete">Gazete</a>
+            <a href="#dergi">Dergi</a>
         </div>
-        <div class="print-title" id="printName">Firma Adı</div>
-        <div class="print-subtitle" id="printTitle">Ünvan</div>
-        <div class="print-qr-box" id="qrcode-poster"></div>
-        <div class="print-cta">Hızlı İşlem İçin Okutun 📷</div>
-        <div class="print-footer">Dijital Kartvizit V1 | Developed by Batuhan Bayatlı</div>
-    </div>
+    </nav>
 
-    <div class="modal-overlay" id="legalModal">
-        <div class="modal-box">
-            <div class="modal-title"><i class="fas fa-exclamation-triangle"></i> Yasal Bilgilendirme</div>
-            <div class="modal-text">
-                <strong>1. Ücretsiz Yazılım:</strong> Bu sistem, acentelerin dijitalleşmesi için Batuhan Bayatlı tarafından ücretsiz geliştirilmiştir.<br><br>
-                <strong>2. Veri Güvenliği:</strong> Veritabanı kullanılmamaktadır. Tüm bilgiler linkin içinde şifrelenmeden taşınır.<br><br>
-                <strong>3. Sorumluluk Reddi:</strong> Sistem "olduğu gibi" sunulmuştur. Geliştirici sorumlu değildir.
-            </div>
-            <button class="modal-btn" onclick="acceptLegal()">Okudum ve Kabul Ediyorum</button>
+    <div class="agenda-section" id="gundem">
+        <div class="agenda-grid">
+            <div class="news-box box-tr"><div class="box-header"><span style="color:#ef4444;">TR Gündem</span></div><div id="content-tr">Yükleniyor...</div></div>
+            <div class="news-box box-law"><div class="box-header"><span style="color:#2563eb;">Mevzuat</span></div><div id="content-law">Yükleniyor...</div></div>
+            <div class="news-box box-world"><div class="box-header"><span style="color:#16a34a;">Dünya</span></div><div id="content-world">Yükleniyor...</div></div>
         </div>
     </div>
 
-    <div class="editor-panel">
-        <h2 style="margin:0; color:var(--dark);"><i class="fas fa-magic"></i> Kartvizit Oluşturucu</h2>
-        <div class="section-title">Firma Bilgileri</div>
-        <div class="form-group">
-            <label>Firma Adı</label>
-            <input type="text" class="form-control" id="inpName" placeholder="Örn: Güneş Sigorta" oninput="updatePreview()">
-            <div class="style-tools">
-                <div class="style-btn" onclick="toggleStyle('nameBold', this)"><i class="fas fa-bold"></i></div>
-                <div class="style-btn" onclick="toggleStyle('nameItalic', this)"><i class="fas fa-italic"></i></div>
-                <input type="color" class="color-input" id="colText" value="#ffffff" oninput="updatePreview()">
+    <div class="newspaper-section" id="gazete">
+        <div class="paper-header"><h2 class="paper-title">GÜNLÜK SİGORTA</h2><small>KÖŞE YAZILARI</small></div>
+        <div class="paper-layout">
+            <div class="paper-controls">
+                <button class="control-btn" id="btn-up" onclick="changeGazetePage(-1)">▲</button>
+                <span id="page-num" style="font-weight:bold;">1</span>
+                <button class="control-btn" id="btn-down" onclick="changeGazetePage(1)">▼</button>
             </div>
-            <input type="hidden" id="nameBold" value="false">
-            <input type="hidden" id="nameItalic" value="false">
-        </div>
-
-        <div class="form-group"><label>Ünvan</label><input type="text" class="form-control" id="inpTitle" placeholder="Yetkili Acente" oninput="updatePreview()"></div>
-
-        <div class="section-title">Görsel</div>
-        <div class="form-group"><label>Logo URL</label><input type="text" class="form-control" id="inpLogo" placeholder="https://..." oninput="updatePreview()"></div>
-        <div class="form-group"><label>Arka Plan URL</label><input type="text" class="form-control" id="inpBgImg" placeholder="https://..." oninput="updatePreview()"></div>
-        <div class="form-group"><label>Arka Plan Rengi</label><div style="display:flex; gap:10px;"><input type="color" class="color-input" id="colBg1" value="#1e293b" oninput="updatePreview()"><input type="color" class="color-input" id="colBg2" value="#0f172a" oninput="updatePreview()"></div></div>
-
-        <div class="section-title">İletişim</div>
-        <div class="form-group"><label>Telefon</label><input type="tel" class="form-control" id="inpPhone" oninput="formatPhone(this); updatePreview()"></div>
-        <div class="form-group"><label>WhatsApp</label><input type="tel" class="form-control" id="inpWs" oninput="formatPhone(this); updatePreview()"></div>
-        <div class="form-group"><label>Adres</label><textarea class="form-control" id="inpAddress" rows="2" oninput="updatePreview()"></textarea></div>
-        <div class="form-group" style="background:#f8fafc; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
-            <label><i class="fas fa-globe"></i> Web Sitesi</label>
-            <input type="text" class="form-control" id="inpWeb" placeholder="www.site.com" oninput="updatePreview()">
-            <div style="margin-top:5px; display:flex; gap:5px;"><input type="color" class="color-input" id="colWeb" value="#6366f1" oninput="updatePreview()"></div>
-        </div>
-
-        <div class="section-title">Finans</div>
-        <div class="form-group"><label>IBAN (Max 32 Karakter)</label><input type="text" class="form-control" id="inpIban" placeholder="TR..." oninput="formatIBAN(this); updatePreview()"></div>
-        <div class="form-group"><label>Arama Buton Rengi</label><input type="color" class="color-input" id="colBtn" value="#3b82f6" oninput="updatePreview()"></div>
-
-        <button class="btn-generate" onclick="generateLink()">✨ QR Kod ve Link Üret</button>
-        
-        <div class="link-result" id="resBox">
-            <div style="font-size:0.8rem; color:#64748b; margin-bottom:5px;">Mobil Önizleme QR Kodu:</div>
-            <div id="qrcode"></div>
-            <div class="link-actions">
-                <button class="action-sm-btn btn-copy" onclick="copyLink()">📋 Linki Kopyala</button>
-                <a href="https://tinyurl.com/app" target="_blank" class="action-sm-btn btn-shorten">✂️ Kısalt (TinyURL)</a>
-            </div>
-            <button class="action-sm-btn btn-print" onclick="printPoster()"><i class="fas fa-print"></i> A4 Poster Yazdır</button>
-            <input type="text" id="finalLinkInput" style="opacity:0; height:1px; width:1px;">
+            <div class="paper-articles" id="gazete-container"></div>
         </div>
     </div>
 
-    <div class="preview-area">
-        <div class="phone-mockup">
-            <div class="screen" id="screenEl">
-                <div class="screen-overlay"></div>
-                <div class="content-wrapper">
-                    <div class="card-header">
-                        <div class="logo-box"><img src="" id="cardLogo" class="logo-img" style="display:none;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'"><i class="fas fa-building" id="logoIcon" style="font-size:3rem; color:#ccc;"></i></div>
-                        <h1 class="firm-name" id="cardName">Firma Adı</h1>
-                        <div class="firm-title" id="cardTitle">Ünvan</div>
-                    </div>
-                    <div class="action-list">
-                        <a href="#" class="action-btn bg-ws" id="btnWs"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-                        <a href="#" class="action-btn" id="btnCall"><i class="fas fa-phone-alt"></i> Hemen Ara</a>
-                        <a href="#" class="action-btn hidden" id="btnWeb" target="_blank"><i class="fas fa-globe"></i> Web Sitesi</a>
-                        <a href="#" class="action-btn bg-map" id="btnMap" target="_blank"><i class="fas fa-map-marker-alt"></i> Konuma Git</a>
-                        <div class="action-btn" onclick="copyToClipboard()" style="background: rgba(255,255,255,0.15); cursor: pointer; border: 1px solid rgba(255,255,255,0.2);">
-                            <i class="far fa-credit-card"></i>
-                            <div class="btn-iban-content"><span class="iban-label">IBAN Kopyalamak İçin Tıkla</span><span class="iban-number" id="ibanDisplay">TR00 0000...</span></div>
-                            <input type="hidden" id="rawIban">
-                        </div>
-                    </div>
-                    <div class="footer"><div>Dijital Kartvizit V1</div><div class="dev-signature">Geliştirici: <a href="https://www.linkedin.com/in/batuhanbayatlı/" target="_blank">Batuhan Bayatlı</a></div></div>
+    <div class="magazine-section" id="dergi">
+        <div class="mag-container">
+            <div class="mag-cover" id="mag-cover-el" onclick="openMagReader()">
+                <div class="mag-overlay"></div> <div class="mag-content-layer">
+                    <div class="mag-logo">INSUR<br>TECH</div>
+                    <div id="mag-headline" class="mag-headline">DOSYA KONUSU HAZIRLANIYOR</div>
+                    <div style="margin-top:auto; font-weight:bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">SAYI: 14 • 2026</div>
                 </div>
-                <div class="toast" id="toast">IBAN Kopyalandı! ✅</div>
             </div>
+            <div>
+                <h2 style="font-size:2.5rem; margin-bottom:20px;">Sektörel Bakış Dergisi</h2>
+                <p id="mag-desc" style="color:#cbd5e1; font-size:1.1rem; line-height:1.6;">Yükleniyor...</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Copyright © 2026. Sigorta Haber Merkezi. <br> <small>Otomatik yenileme devrede.</small></p>
+    </footer>
+
+    <div id="readerModal" class="reader-modal">
+        <div class="reader-content">
+            <span class="reader-close" onclick="document.getElementById('readerModal').style.display='none'">&times;</span>
+            <div id="readerBody"></div>
         </div>
     </div>
 
     <script>
-        function checkLegal() {
-            const params = new URLSearchParams(window.location.search);
-            if (params.has('name')) document.getElementById('legalModal').style.display = 'none';
-            else document.getElementById('legalModal').style.display = 'flex';
-        }
-        function acceptLegal() { document.getElementById('legalModal').style.display = 'none'; }
-        function toggleStyle(inputId, btn) {
-            const el = document.getElementById(inputId); el.value = el.value === 'true' ? 'false' : 'true'; btn.classList.toggle('active'); updatePreview();
-        }
-        function formatPhone(i) {
-            let v = i.value.replace(/\D/g, ''); if(v.startsWith('0')) v=v.substring(1);
-            let f = ''; if(v.length>0) f+='('+v.substring(0,3); if(v.length>=3) f+=') '+v.substring(3,6); if(v.length>=6) f+=' '+v.substring(6,8); if(v.length>=8) f+=' '+v.substring(8,10); i.value = f;
-        }
-        function formatIBAN(i) {
-            let v = i.value.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 32); i.value = v.match(/.{1,4}/g)?.join(' ') || v;
-        }
+        let gazetePage = 0;
+        const itemsPerPage = 5;
+        let allNewsData = [];
+        let magContent = {}; // Dergi içeriğini saklamak için
 
-        function updatePreview() {
-            const name = document.getElementById('inpName').value || 'Firma Adı';
-            const title = document.getElementById('inpTitle').value || 'Ünvan';
-            const phone = document.getElementById('inpPhone').value.replace(/\D/g,'');
-            const ws = document.getElementById('inpWs').value.replace(/\D/g,'') || phone;
-            const addr = document.getElementById('inpAddress').value;
-            const web = document.getElementById('inpWeb').value;
-            const iban = document.getElementById('inpIban').value;
-            const logo = document.getElementById('inpLogo').value;
-            const bgImg = document.getElementById('inpBgImg').value;
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
+            // 5 Dakikada bir (300.000 ms) veriyi yenile
+            setInterval(fetchData, 300000); 
+            console.log("Otomatik yenileme aktif: 5dk");
+        });
 
-            // Renkler
-            const cText = document.getElementById('colText').value;
-            const cBg1 = document.getElementById('colBg1').value;
-            const cBg2 = document.getElementById('colBg2').value;
-            const cBtn = document.getElementById('colBtn').value;
-            const cWeb = document.getElementById('colWeb').value;
-
-            // DOM Updates
-            document.getElementById('cardName').innerText = name;
-            document.getElementById('cardName').style.color = cText;
-            document.getElementById('cardName').style.fontWeight = document.getElementById('nameBold').value === 'true' ? '800' : '400';
-            document.getElementById('cardName').style.fontStyle = document.getElementById('nameItalic').value === 'true' ? 'italic' : 'normal';
-            
-            document.getElementById('cardTitle').innerText = title;
-            document.getElementById('cardTitle').style.color = cText;
-
-            const elScreen = document.getElementById('screenEl');
-            if (bgImg && bgImg.length > 5) elScreen.style.backgroundImage = `url('${bgImg}')`;
-            else elScreen.style.backgroundImage = `linear-gradient(135deg, ${cBg1} 0%, ${cBg2} 100%)`;
-
-            document.getElementById('btnCall').style.background = cBtn;
-            document.getElementById('btnCall').href = `tel:+90${phone}`;
-            document.getElementById('btnWs').href = `https://wa.me/90${ws}?text=Merhaba`;
-            document.getElementById('btnMap').href = addr ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}` : '#';
-
-            const btnWeb = document.getElementById('btnWeb');
-            if (web && web.length > 3) {
-                btnWeb.classList.remove('hidden');
-                btnWeb.href = web.startsWith('http') ? web : 'https://' + web;
-                btnWeb.style.background = cWeb;
-            } else { btnWeb.classList.add('hidden'); }
-
-            document.getElementById('ibanDisplay').innerText = iban ? iban : 'TR00 0000...';
-            document.getElementById('rawIban').value = iban;
-
-            const img = document.getElementById('cardLogo');
-            const icon = document.getElementById('logoIcon');
-            if(logo && logo.length > 5) { img.src=logo; img.style.display='block'; icon.style.display='none'; }
-            else { img.style.display='none'; icon.style.display='block'; }
+        async function fetchData() {
+            try {
+                // Cache-buster ile taze veri çek
+                const response = await fetch('haberler.json?v=' + Date.now());
+                allNewsData = await response.json();
+                loadContent();
+                renderGazete();
+            } catch (error) { console.log("Veri çekilemedi."); }
         }
 
-        function generateLink() {
-            const baseUrl = window.location.href.split('?')[0];
-            const p = new URLSearchParams();
-            
-            p.append('name', document.getElementById('inpName').value);
-            p.append('title', document.getElementById('inpTitle').value);
-            p.append('phone', document.getElementById('inpPhone').value);
-            p.append('ws', document.getElementById('inpWs').value);
-            p.append('addr', document.getElementById('inpAddress').value);
-            p.append('web', document.getElementById('inpWeb').value);
-            p.append('iban', document.getElementById('inpIban').value);
-            p.append('logo', document.getElementById('inpLogo').value);
-            p.append('bg', document.getElementById('inpBgImg').value);
-            p.append('c1', document.getElementById('colBg1').value.replace('#',''));
-            p.append('c2', document.getElementById('colBg2').value.replace('#',''));
-            p.append('cb', document.getElementById('colBtn').value.replace('#',''));
-            p.append('cw', document.getElementById('colWeb').value.replace('#',''));
-            p.append('ct', document.getElementById('colText').value.replace('#',''));
-            p.append('sb', document.getElementById('nameBold').value === 'true' ? '1' : '0');
-            p.append('si', document.getElementById('nameItalic').value === 'true' ? '1' : '0');
+        function loadContent() {
+            const tr = allNewsData.find(i => i.format === 'tr_gundem');
+            const law = allNewsData.find(i => i.format === 'mevzuat');
+            const world = allNewsData.find(i => i.format === 'dunya');
+            const mag = allNewsData.find(i => i.format === 'dergi');
 
-            const fullLink = `${baseUrl}?${p.toString()}`;
-            document.getElementById('resBox').style.display = 'block';
-            document.getElementById('finalLinkInput').value = fullLink;
-
+            if(tr) fillBox('content-tr', tr);
+            if(law) fillBox('content-law', law);
+            if(world) fillBox('content-world', world);
             
-            const qrSmall = document.getElementById("qrcode");
-            qrSmall.innerHTML = "";
-            new QRCode(qrSmall, { text: fullLink, width: 150, height: 150, correctLevel: QRCode.CorrectLevel.L });
-
-            
-            document.getElementById('printName').innerText = document.getElementById('inpName').value || "Firma Adı";
-            document.getElementById('printTitle').innerText = document.getElementById('inpTitle').value || "Yetkili Acente";
-            
-            const logoUrl = document.getElementById('inpLogo').value;
-            if(logoUrl && logoUrl.length > 5) {
-                document.getElementById('printLogo').src = logoUrl;
-                document.getElementById('printLogo').style.display = 'block';
-                document.getElementById('printIcon').style.display = 'none';
-            } else {
-                document.getElementById('printLogo').style.display = 'none';
-                document.getElementById('printIcon').style.display = 'block';
+            if(mag) {
+                magContent = mag; // Global değişkene at
+                document.getElementById('mag-headline').innerText = mag.title;
+                const tempDiv = document.createElement("div"); tempDiv.innerHTML = mag.content;
+                document.getElementById('mag-desc').innerText = tempDiv.textContent.substring(0, 200) + "...";
+                
+                // KAPAK RESMİ AYARI
+                const coverEl = document.getElementById('mag-cover-el');
+                if(mag.cover && mag.cover.length > 5) {
+                    // Eğer admin panelinden kapak resmi girildiyse
+                    coverEl.style.backgroundImage = `url('${mag.cover}')`;
+                } else {
+                    // Girilmediyse varsayılan kırmızı degrade
+                    coverEl.style.backgroundImage = 'linear-gradient(135deg, #ef4444, #991b1b)';
+                }
             }
+        }
 
-            
-            const qrPoster = document.getElementById("qrcode-poster");
-            qrPoster.innerHTML = "";
-            new QRCode(qrPoster, { text: fullLink, width: 350, height: 350, correctLevel: QRCode.CorrectLevel.L });
+        function fillBox(id, item) {
+            document.getElementById(id).innerHTML = `
+                <h2 style="cursor:pointer" onclick='openReader("${item.title.replace(/"/g, '&quot;')}", ${JSON.stringify(item.content)})'>${item.title}</h2>
+                <small>${item.date}</small>`;
+        }
+
+        function renderGazete() {
+            const list = allNewsData.filter(i => i.format === 'gazete');
+            const container = document.getElementById('gazete-container');
+            if(list.length === 0) { container.innerHTML = "Yazı yok."; return; }
+
+            const start = gazetePage * itemsPerPage;
+            const items = list.slice(start, start + itemsPerPage);
+
+            container.innerHTML = "";
+            items.forEach(item => {
+                const tempDiv = document.createElement("div"); tempDiv.innerHTML = item.content;
+                const txt = tempDiv.textContent.substring(0, 200);
+                container.innerHTML += `
+                    <div class="gazete-item">
+                        <h3 class="gazete-title" onclick='openReader("${item.title.replace(/"/g, '&quot;')}", ${JSON.stringify(item.content)})'>${item.title}</h3>
+                        <div class="gazete-text">${txt}...</div>
+                    </div>`;
+            });
+        }
+
+        function changeGazetePage(dir) {
+            gazetePage += dir; renderGazete();
+        }
+
+        function openReader(title, content) {
+            document.getElementById('readerBody').innerHTML = `<h1>${title}</h1><div>${content}</div>`;
+            document.getElementById('readerModal').style.display = 'block';
         }
         
-        function printPoster() { window.print(); }
-
-        function copyLink() {
-            const link = document.getElementById('finalLinkInput'); link.select(); document.execCommand("copy"); alert("Link Kopyalandı!");
-        }
-
-        window.onload = function() {
-            checkLegal();
-            const p = new URLSearchParams(window.location.search);
-            if (p.has('name')) {
-                document.body.classList.add('view-mode');
-                document.getElementById('inpName').value = p.get('name');
-                document.getElementById('inpTitle').value = p.get('title');
-                document.getElementById('inpPhone').value = p.get('phone');
-                document.getElementById('inpWs').value = p.get('ws');
-                document.getElementById('inpAddress').value = p.get('addr');
-                document.getElementById('inpWeb').value = p.get('web');
-                document.getElementById('inpIban').value = p.get('iban');
-                document.getElementById('inpLogo').value = p.get('logo');
-                document.getElementById('inpBgImg').value = p.get('bg');
-                if(p.get('c1')) document.getElementById('colBg1').value = '#' + p.get('c1');
-                if(p.get('c2')) document.getElementById('colBg2').value = '#' + p.get('c2');
-                if(p.get('cb')) document.getElementById('colBtn').value = '#' + p.get('cb');
-                if(p.get('cw')) document.getElementById('colWeb').value = '#' + p.get('cw');
-                if(p.get('ct')) document.getElementById('colText').value = '#' + p.get('ct');
-                document.getElementById('nameBold').value = p.get('sb') === '1' ? 'true' : 'false';
-                document.getElementById('nameItalic').value = p.get('si') === '1' ? 'true' : 'false';
-                updatePreview();
-            }
-        };
-        
-        function copyToClipboard() {
-            const text = document.getElementById('rawIban').value;
-            if(text) { navigator.clipboard.writeText(text); document.getElementById('toast').style.opacity = '1'; setTimeout(() => document.getElementById('toast').style.opacity = '0', 2000); }
+        function openMagReader() {
+            if(magContent.title) openReader(magContent.title, magContent.content);
         }
     </script>
 </body>
 </html>
-
-
